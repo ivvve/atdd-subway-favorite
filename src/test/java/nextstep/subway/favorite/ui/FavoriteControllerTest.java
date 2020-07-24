@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -58,7 +59,10 @@ class FavoriteControllerTest {
     @Test
     void getFavoritesWhenFavoritesAreEmpty() {
         // given
-        List<Station> stations = Lists.newArrayList(new Station(1L, "강남역"), new Station(2L, "역삼역"));
+        List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"));
+        ReflectionTestUtils.setField(stations.get(0), "id", 1L);
+        ReflectionTestUtils.setField(stations.get(1), "id", 2L);
+
         Favorite favorite = new Favorite(1L, LOGIN_USER.getId(), stations.get(0).getId(), stations.get(1).getId());
 
         when(favoriteService.findFavorites(LOGIN_USER.getId()))
